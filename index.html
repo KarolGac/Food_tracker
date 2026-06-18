@@ -411,25 +411,34 @@
   let pendingProducts = {};
 
   function buildResultCard(containerId, p100) {
-    // p100 = macros per 100g: { name, cal, protein, carbs, fat, fiber, emoji }
     const tid = "p_" + Date.now() + "_" + Math.random().toString(36).slice(2);
     pendingProducts[tid] = p100;
+    const imgHtml = p100.image
+      ? `<img src="${p100.image}" alt="" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:#1a0008;flex-shrink:0;" onerror="this.style.display='none'">`
+      : `<div style="width:60px;height:60px;border-radius:8px;background:#1a0008;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">🍽️</div>`;
+    const brandHtml = p100.brand ? `<div style="font-size:10px;color:#555;margin-top:2px;">${p100.brand.split(',')[0]}</div>` : "";
     return `<div class="result-card" id="card-${tid}">
-      <div class="result-name">${p100.emoji} ${p100.name}</div>
-      <div class="per100-note">Voedingswaarden per 100g:</div>
-      <div class="result-macros">
-        <div class="macro-pill"><span>${p100.cal}</span> kcal</div>
-        <div class="macro-pill">eiwit <span>${p100.protein}g</span></div>
-        <div class="macro-pill">kh <span>${p100.carbs}g</span></div>
-        <div class="macro-pill">vet <span>${p100.fat}g</span></div>
-        ${p100.fiber > 0 ? `<div class="macro-pill">vezels <span>${p100.fiber}g</span></div>` : ""}
+      <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;">
+        ${imgHtml}
+        <div style="flex:1;min-width:0;">
+          <div class="result-name" style="margin-bottom:2px;">${p100.name}</div>
+          ${brandHtml}
+          <div class="per100-note" style="margin-top:4px;">per 100g</div>
+          <div class="result-macros" style="margin-top:6px;margin-bottom:0;">
+            <div class="macro-pill"><span>${p100.cal}</span> kcal</div>
+            <div class="macro-pill">eiwit <span>${p100.protein}g</span></div>
+            <div class="macro-pill">kh <span>${p100.carbs}g</span></div>
+            <div class="macro-pill">vet <span>${p100.fat}g</span></div>
+            ${p100.fiber > 0 ? `<div class="macro-pill">vezels <span>${p100.fiber}g</span></div>` : ""}
+          </div>
+        </div>
       </div>
       <div class="serving-row">
         <span class="serving-label">Portie:</span>
         <input class="serving-input" id="serving-${tid}" type="number" inputmode="decimal" value="100"
           oninput="updateServing('${tid}')" onchange="updateServing('${tid}')">
         <span class="serving-unit">gram</span>
-        <div class="serving-result" id="serving-result-${tid}"><strong>100 kcal</strong></div>
+        <div class="serving-result" id="serving-result-${tid}"><strong>${p100.cal} kcal</strong></div>
       </div>
       <div class="result-actions">
         <button class="result-save-btn" onclick="saveProduct('${tid}')">💾 Opslaan</button>
@@ -499,26 +508,53 @@
     const resultsEl = document.getElementById("search-results");
     resultsEl.innerHTML = '<div class="loading-msg">Zoeken...</div>';
     try {
-      const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=10&fields=product_name,nutriments`;
-      const res = await fetch(url);
-      const data = await res.json();
-      const products = (data.products || []).filter(p => p.product_name && p.nutriments && p.nutriments["energy-kcal_100g"]);
-      if (products.length === 0) { resultsEl.innerHTML = '<div class="empty-msg">Geen resultaten.</div>'; return; }
-      resultsEl.innerHTML = products.slice(0, 6).map(p => {
+      // Search Dutch/Belgian products first, then global
+      const [nlRes, globalRes] = await Promise.all([
+        fetch(`https://nl.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=30&fields=product_name,product_name_nl,nutriments,image_front_small_url,brands`),
+        fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=30&fields=product_name,product_name_nl,nutriments,image_front_small_url,brands`)
+      ]);
+      const nlData = await nlRes.json();
+      const globalData = await globalRes.json();
+
+      // Merge, deduplicate by name, filter valid
+      const seen = new Set();
+      const all = [...(nlData.products || []), ...(globalData.products || [])].filter(p => {
+        const name = (p.product_name_nl || p.product_name || "").trim();
+        if (!name || !p.nutriments || !p.nutriments["energy-kcal_100g"]) return false;
+        if (seen.has(name.toLowerCase())) return false;
+        seen.add(name.toLowerCase());
+        return true;
+      });
+
+      // Sort: exact/starts-with matches first
+      const q = query.toLowerCase();
+      all.sort((a, b) => {
+        const na = (a.product_name_nl || a.product_name || "").toLowerCase();
+        const nb = (b.product_name_nl || b.product_name || "").toLowerCase();
+        const aExact = na === q ? 0 : na.startsWith(q) ? 1 : na.includes(q) ? 2 : 3;
+        const bExact = nb === q ? 0 : nb.startsWith(q) ? 1 : nb.includes(q) ? 2 : 3;
+        return aExact - bExact;
+      });
+
+      if (all.length === 0) { resultsEl.innerHTML = '<div class="empty-msg">Geen resultaten voor "' + query + '".</div>'; return; }
+
+      resultsEl.innerHTML = all.slice(0, 20).map(p => {
+        const name = (p.product_name_nl || p.product_name || "").substring(0, 50);
         const p100 = {
-          name: p.product_name.substring(0, 50),
+          name,
           cal: Math.round(p.nutriments["energy-kcal_100g"] || 0),
           protein: Math.round(p.nutriments["proteins_100g"] || 0),
           carbs: Math.round(p.nutriments["carbohydrates_100g"] || 0),
           fat: Math.round(p.nutriments["fat_100g"] || 0),
           fiber: Math.round(p.nutriments["fiber_100g"] || 0),
+          image: p.image_front_small_url || null,
+          brand: p.brands || null,
           emoji: "🔍"
         };
         return buildResultCard("search-results", p100);
       }).join("");
-      // Init serving displays
       Object.keys(pendingProducts).forEach(tid => updateServing(tid));
-    } catch(e) { resultsEl.innerHTML = '<div class="empty-msg">Fout bij zoeken.</div>'; }
+    } catch(e) { resultsEl.innerHTML = '<div class="empty-msg">Fout bij zoeken. Controleer je internet.</div>'; }
   }
 
   // ---- SCANNER ----
