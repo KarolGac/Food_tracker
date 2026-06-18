@@ -259,7 +259,7 @@
   <button class="nav-btn" id="nav-history" onclick="switchView('history')"><span class="nav-icon">📅</span>Geschiedenis</button>
 </div>
 
-<script src="https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
 <script>
   const CALORIE_GOAL = 2500;
   const PROTEIN_GOAL = 170;
@@ -508,17 +508,31 @@
     const resultsEl = document.getElementById("search-results");
     resultsEl.innerHTML = '<div class="loading-msg">Zoeken...</div>';
     try {
-      // Search Dutch/Belgian products first, then global
-      const [nlRes, globalRes] = await Promise.all([
-        fetch(`https://nl.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=30&fields=product_name,product_name_nl,nutriments,image_front_small_url,brands`),
-        fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=30&fields=product_name,product_name_nl,nutriments,image_front_small_url,brands`)
-      ]);
-      const nlData = await nlRes.json();
-      const globalData = await globalRes.json();
+      // Use the legacy search endpoint (this is the one that worked before).
+      async function fetchProducts(host) {
+        try {
+          const url = `https://${host}/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=30&fields=product_name,product_name_nl,nutriments,image_front_small_url,brands`;
+          const res = await fetch(url);
+          if (!res.ok) return [];
+          const data = await res.json();
+          return data.products || [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      let results = await fetchProducts("nl.openfoodfacts.org");
+      const worldResults = await fetchProducts("world.openfoodfacts.org");
+      const combined = [...results, ...worldResults];
+
+      if (combined.length === 0) {
+        resultsEl.innerHTML = '<div class="empty-msg">Geen verbinding met de database. Controleer je internet en probeer opnieuw.</div>';
+        return;
+      }
 
       // Merge, deduplicate by name, filter valid
       const seen = new Set();
-      const all = [...(nlData.products || []), ...(globalData.products || [])].filter(p => {
+      const all = combined.filter(p => {
         const name = (p.product_name_nl || p.product_name || "").trim();
         if (!name || !p.nutriments || !p.nutriments["energy-kcal_100g"]) return false;
         if (seen.has(name.toLowerCase())) return false;
