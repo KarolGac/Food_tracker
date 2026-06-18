@@ -43,17 +43,16 @@
     .log-emoji { font-size: 22px; }
     .log-name { font-size: 14px; font-weight: 600; color: #e8e8e8; }
     .log-meta { font-size: 12px; color: #555; margin-top: 1px; }
-    .remove-btn { background: none; border: none; color: #e8003a; font-size: 20px; cursor: pointer; padding: 4px 8px; line-height: 1; opacity: 0.6; }
+    .remove-btn { background: none; border: none; color: #e8003a; font-size: 20px; cursor: pointer; padding: 4px 8px; line-height: 1; opacity: 0.5; }
     .remove-btn:active { opacity: 1; }
     .empty-msg { text-align: center; color: #333; padding: 28px 0; font-size: 14px; }
     .btn-primary {
       width: 100%; padding: 15px; background: #e8003a; color: #fff;
       border: none; border-radius: 12px; font-weight: 800; font-size: 15px;
       cursor: pointer; margin-top: 8px; display: block;
-      box-shadow: 0 4px 20px rgba(232,0,58,0.35); letter-spacing: 0.3px;
+      box-shadow: 0 4px 20px rgba(232,0,58,0.35);
     }
     .btn-primary:active { transform: scale(0.98); }
-    .btn-primary:disabled { background: #3a0010; color: #666; box-shadow: none; cursor: default; }
     .btn-secondary {
       width: 100%; padding: 14px; background: #150008; color: #aaa;
       border: 1px solid #2a0010; border-radius: 12px; font-weight: 700; font-size: 15px;
@@ -61,39 +60,42 @@
     }
     .btn-ghost { width: 100%; padding: 12px; background: none; color: #444; border: none; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 4px; display: block; }
 
-    /* Preset items with checkbox */
-    .preset-item {
+    .meal-item {
       background: #0f0005; border: 1px solid #1a0008; border-radius: 10px;
       padding: 10px 12px; margin-bottom: 8px;
       display: flex; align-items: center; justify-content: space-between;
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
       transition: border-color 0.15s, background 0.15s;
     }
-    .preset-item.selected { border-color: #e8003a; background: #1a0008; }
-    .preset-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; cursor: pointer; }
-    .preset-emoji { font-size: 22px; flex-shrink: 0; }
-    .preset-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #e8e8e8; }
-    .preset-cal { font-size: 11px; color: #555; }
-    .preset-controls { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: 8px; }
+    .meal-item.selected { border-color: #e8003a; background: #1a0008; }
+    .meal-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; cursor: pointer; }
+    .meal-emoji { font-size: 22px; flex-shrink: 0; }
+    .meal-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #e8e8e8; }
+    .meal-cal { font-size: 11px; color: #555; }
+    .meal-controls { display: flex; align-items: center; gap: 5px; flex-shrink: 0; margin-left: 6px; }
     .qty-btn {
       background: #1a0008; border: 1px solid #2a0010; border-radius: 7px; color: #aaa;
-      width: 32px; height: 32px; font-size: 18px; cursor: pointer;
+      width: 28px; height: 28px; font-size: 16px; cursor: pointer;
       display: flex; align-items: center; justify-content: center; font-weight: 700;
     }
-    .qty-num { font-size: 15px; font-weight: 700; min-width: 20px; text-align: center; color: #fff; }
-    .preset-check {
+    .qty-num { font-size: 14px; font-weight: 700; min-width: 18px; text-align: center; color: #fff; }
+    .meal-check {
       width: 26px; height: 26px; border-radius: 7px; border: 2px solid #2a0010;
       background: #0f0005; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; flex-shrink: 0; margin-left: 8px; font-size: 14px;
+      cursor: pointer; flex-shrink: 0; margin-left: 4px; font-size: 13px;
       transition: all 0.15s;
     }
-    .preset-check.checked { background: #e8003a; border-color: #e8003a; }
+    .meal-check.checked { background: #e8003a; border-color: #e8003a; color: #fff; }
+    .meal-delete {
+      background: none; border: none; color: #e8003a; font-size: 15px;
+      cursor: pointer; padding: 4px 6px; opacity: 0.35; flex-shrink: 0; margin-left: 2px;
+    }
+    .meal-delete:active { opacity: 1; }
 
-    /* Basket bar */
     .basket-bar {
-      position: sticky; bottom: 80px; left: 0; right: 0;
+      position: sticky; bottom: 80px;
       background: #0f0005; border: 1px solid #e8003a; border-radius: 12px;
-      margin: 8px 0; padding: 12px 14px;
+      margin: 8px 0 4px; padding: 12px 14px;
       display: none; align-items: center; justify-content: space-between;
       box-shadow: 0 4px 20px rgba(232,0,58,0.2);
     }
@@ -106,7 +108,6 @@
       box-shadow: 0 2px 10px rgba(232,0,58,0.3);
     }
 
-    /* Custom meal section */
     .input {
       width: 100%; background: #0f0005; border: 1px solid #2a0010;
       border-radius: 10px; padding: 12px 14px; color: #e8e8e8; font-size: 15px; margin-bottom: 8px;
@@ -114,21 +115,12 @@
     .input::placeholder { color: #444; }
     .input:focus { outline: none; border-color: #e8003a; box-shadow: 0 0 0 3px rgba(232,0,58,0.1); }
 
-    /* Saved custom meals section */
-    .custom-meals-header {
-      display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
-    }
-    .delete-custom-btn {
-      background: none; border: none; color: #e8003a; font-size: 16px;
-      cursor: pointer; padding: 2px 6px; opacity: 0.5; flex-shrink: 0;
-    }
-    .delete-custom-btn:active { opacity: 1; }
-
-    .history-day { background: #0f0005; border: 1px solid #1a0008; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+    .history-day { background: #0f0005; border: 1px solid #1a0008; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
     .history-date { font-size: 14px; font-weight: 700; margin-bottom: 8px; color: #e8e8e8; }
     .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
     .badge { border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 600; }
     .history-item { font-size: 12px; color: #444; padding: 2px 0; }
+
     .bottom-nav {
       position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
       width: 100%; max-width: 430px; background: #0a0002; border-top: 1px solid #1a0008;
@@ -140,8 +132,8 @@
     .nav-icon { font-size: 20px; }
     .view { display: none; }
     .view.active { display: block; }
-    #preset-section { display: none; margin-top: 12px; }
-    #custom-section { display: none; margin-top: 12px; }
+    #select-section { display: none; margin-top: 12px; }
+    #new-meal-section { display: none; margin-top: 12px; }
   </style>
 </head>
 <body>
@@ -196,37 +188,32 @@
   <div class="section">
     <div class="section-title">Gegeten vandaag</div>
     <div id="log-list"></div>
-    <button class="btn-primary" id="add-meal-btn" onclick="showPresets()">+ Maaltijd toevoegen</button>
+    <button class="btn-primary" id="add-meal-btn" onclick="showSelectSection()">+ Maaltijd toevoegen</button>
 
-    <div id="preset-section">
-      <div class="section-title" style="margin-top:8px;">Selecteer maaltijden</div>
-      <div id="preset-list"></div>
-
-      <!-- Saved custom meals -->
-      <div id="custom-meals-block" style="display:none;">
-        <div class="section-title" style="margin-top:16px;">Eigen maaltijden</div>
-        <div id="custom-meals-list"></div>
+    <!-- Select section -->
+    <div id="select-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="section-title" style="margin-bottom:0;">Maaltijden</div>
+        <button onclick="showNewMealForm()" style="background:none;border:none;color:#e8003a;font-size:13px;font-weight:700;cursor:pointer;">+ Nieuw</button>
       </div>
-
-      <!-- Basket bar -->
+      <div id="meals-list"></div>
       <div class="basket-bar" id="basket-bar">
         <div class="basket-info">
           <strong id="basket-cal">0</strong> kcal · <span id="basket-prot">0</span>g eiwit
         </div>
-        <button class="basket-add-btn" onclick="addBasket()">Voeg toe aan log ✓</button>
+        <button class="basket-add-btn" onclick="addBasket()">Voeg toe ✓</button>
       </div>
-
-      <button class="btn-secondary" onclick="showCustomForm()">+ Nieuwe maaltijd opslaan</button>
       <button class="btn-ghost" onclick="hideAll()">Annuleren</button>
     </div>
 
-    <div id="custom-section">
-      <div class="section-title" style="margin-top:8px;">Nieuwe maaltijd opslaan</div>
-      <input class="input" id="custom-name" placeholder="Naam (bijv. Rijst 200g)" type="text">
-      <input class="input" id="custom-cal" placeholder="Calorieën (kcal)" type="number" inputmode="numeric">
-      <input class="input" id="custom-prot" placeholder="Eiwit (gram)" type="number" inputmode="numeric">
-      <button class="btn-primary" onclick="saveCustomMeal()">Opslaan & toevoegen</button>
-      <button class="btn-ghost" onclick="backToPresets()">Terug</button>
+    <!-- New meal form -->
+    <div id="new-meal-section">
+      <div class="section-title" style="margin-top:8px;">Nieuwe maaltijd</div>
+      <input class="input" id="new-name" placeholder="Naam (bijv. Rijst 200g)" type="text">
+      <input class="input" id="new-cal" placeholder="Calorieën (kcal)" type="number" inputmode="numeric">
+      <input class="input" id="new-prot" placeholder="Eiwit (gram)" type="number" inputmode="numeric">
+      <button class="btn-primary" onclick="saveNewMeal()">Opslaan</button>
+      <button class="btn-ghost" onclick="backToSelect()">Terug</button>
     </div>
   </div>
 </div>
@@ -252,23 +239,22 @@
   const PROTEIN_GOAL = 170;
   const CIRC = 2 * Math.PI * 59;
 
-  const PRESETS = [
-    { name: "Ei", cal: 70, protein: 6, emoji: "🥚" },
-    { name: "Ontbijtspek (1 slice)", cal: 30, protein: 3, emoji: "🥓" },
-    { name: "Banaan", cal: 90, protein: 1, emoji: "🍌" },
-    { name: "Kiwi", cal: 40, protein: 1, emoji: "🥝" },
-    { name: "Upfront Oats (75g)", cal: 301, protein: 18, emoji: "🥣" },
-    { name: "Bulk Whey (1 scoop)", cal: 115, protein: 22, emoji: "💪" },
-    { name: "Kipfilet (100g)", cal: 110, protein: 23, emoji: "🍗" },
-    { name: "Kip dij (100g)", cal: 190, protein: 18, emoji: "🍗" },
-    { name: "Aardappelen (100g)", cal: 85, protein: 2, emoji: "🥔" },
-    { name: "Turkse pizza", cal: 1000, protein: 45, emoji: "🍕" },
-    { name: "Koreaanse mango ice", cal: 110, protein: 1, emoji: "🍦" },
+  const DEFAULT_MEALS = [
+    { id: "d0", name: "Ei", cal: 70, protein: 6, emoji: "🥚" },
+    { id: "d1", name: "Ontbijtspek (1 slice)", cal: 30, protein: 3, emoji: "🥓" },
+    { id: "d2", name: "Banaan", cal: 90, protein: 1, emoji: "🍌" },
+    { id: "d3", name: "Kiwi", cal: 40, protein: 1, emoji: "🥝" },
+    { id: "d4", name: "Upfront Oats (75g)", cal: 301, protein: 18, emoji: "🥣" },
+    { id: "d5", name: "Bulk Whey (1 scoop)", cal: 115, protein: 22, emoji: "💪" },
+    { id: "d6", name: "Kipfilet (100g)", cal: 110, protein: 23, emoji: "🍗" },
+    { id: "d7", name: "Kip dij (100g)", cal: 190, protein: 18, emoji: "🍗" },
+    { id: "d8", name: "Aardappelen (100g)", cal: 85, protein: 2, emoji: "🥔" },
+    { id: "d9", name: "Turkse pizza", cal: 1000, protein: 45, emoji: "🍕" },
+    { id: "d10", name: "Koreaanse mango ice", cal: 110, protein: 1, emoji: "🍦" },
   ];
 
-  // State
   let quantities = {};
-  let selected = {}; // idx -> true, for presets; "c_ID" -> true for custom
+  let selected = {};
 
   function getTodayKey() { return new Date().toISOString().split("T")[0]; }
 
@@ -282,15 +268,27 @@
       b.textContent = "✓"; setTimeout(() => b.textContent = "", 1200);
     } catch(e) {}
   }
+
+  // All meals = defaults (minus deleted) + custom
+  function loadDeletedDefaults() {
+    try { return JSON.parse(localStorage.getItem("deleted-defaults") || "[]"); } catch { return []; }
+  }
+  function saveDeletedDefaults(arr) {
+    try { localStorage.setItem("deleted-defaults", JSON.stringify(arr)); } catch {}
+  }
   function loadCustomMeals() {
     try { return JSON.parse(localStorage.getItem("custom-meals") || "[]"); } catch { return []; }
   }
   function saveCustomMeals(meals) {
     try { localStorage.setItem("custom-meals", JSON.stringify(meals)); } catch {}
   }
-  function getTodayLog() {
-    return (loadDays()[getTodayKey()] || []);
+  function getAllMeals() {
+    const deleted = loadDeletedDefaults();
+    const defaults = DEFAULT_MEALS.filter(m => !deleted.includes(m.id));
+    return [...defaults, ...loadCustomMeals()];
   }
+
+  function getTodayLog() { return (loadDays()[getTodayKey()] || []); }
 
   function addItemsToDay(items) {
     const days = loadDays();
@@ -303,7 +301,7 @@
     resetSelection();
   }
 
-  function removeItem(id) {
+  function removeLogItem(id) {
     const days = loadDays();
     const key = getTodayKey();
     days[key] = (days[key] || []).filter(i => i.id !== id);
@@ -311,25 +309,28 @@
     renderToday();
   }
 
-  function resetSelection() {
-    quantities = {};
-    selected = {};
+  function deleteMeal(id) {
+    if (String(id).startsWith("d")) {
+      const deleted = loadDeletedDefaults();
+      deleted.push(id);
+      saveDeletedDefaults(deleted);
+    } else {
+      const meals = loadCustomMeals().filter(m => m.id !== id);
+      saveCustomMeals(meals);
+    }
+    delete selected[id];
+    delete quantities[id];
+    renderMealsList();
+    updateBasket();
   }
 
-  // Basket logic
+  function resetSelection() { quantities = {}; selected = {}; }
+
   function getBasket() {
     let totalCal = 0, totalProt = 0, items = [];
-    PRESETS.forEach((p, i) => {
-      if (selected[i]) {
-        const qty = quantities[i] || 1;
-        totalCal += Math.round(p.cal * qty);
-        totalProt += Math.round(p.protein * qty);
-        items.push({ name: qty > 1 ? `${p.name} ×${qty}` : p.name, cal: Math.round(p.cal * qty), protein: Math.round(p.protein * qty), emoji: p.emoji });
-      }
-    });
-    loadCustomMeals().forEach(m => {
-      if (selected["c_" + m.id]) {
-        const qty = quantities["c_" + m.id] || 1;
+    getAllMeals().forEach(m => {
+      if (selected[m.id]) {
+        const qty = quantities[m.id] || 1;
         totalCal += Math.round(m.cal * qty);
         totalProt += Math.round(m.protein * qty);
         items.push({ name: qty > 1 ? `${m.name} ×${qty}` : m.name, cal: Math.round(m.cal * qty), protein: Math.round(m.protein * qty), emoji: m.emoji || "🍽️" });
@@ -356,78 +357,51 @@
     addItemsToDay(items);
   }
 
-  function toggleSelected(key) {
-    selected[key] = !selected[key];
+  function toggleSelected(id) {
+    selected[id] = !selected[id];
     updateBasket();
-    // Re-render just the check
-    const checkEl = document.getElementById("check-" + key);
-    if (checkEl) {
-      checkEl.classList.toggle("checked", !!selected[key]);
-      checkEl.textContent = selected[key] ? "✓" : "";
-    }
-    const itemEl = document.getElementById("item-" + key);
-    if (itemEl) itemEl.classList.toggle("selected", !!selected[key]);
+    const checkEl = document.getElementById("check-" + id);
+    if (checkEl) { checkEl.classList.toggle("checked", !!selected[id]); checkEl.textContent = selected[id] ? "✓" : ""; }
+    const itemEl = document.getElementById("mitem-" + id);
+    if (itemEl) itemEl.classList.toggle("selected", !!selected[id]);
   }
 
-  function changeQty(key, delta) {
-    const cur = quantities[key] || 1;
-    quantities[key] = Math.max(1, cur + delta);
-    const qty = quantities[key];
-    const numEl = document.getElementById("qty-" + key);
+  function changeQty(id, delta) {
+    quantities[id] = Math.max(1, (quantities[id] || 1) + delta);
+    const qty = quantities[id];
+    const numEl = document.getElementById("qty-" + id);
     if (numEl) numEl.textContent = qty;
-    // Update meta display
-    const metaEl = document.getElementById("meta-" + key);
-    if (metaEl) {
-      // find base cal/protein
-      if (typeof key === "number" || (typeof key === "string" && !key.startsWith("c_"))) {
-        const p = PRESETS[key];
-        if (p) metaEl.textContent = `${Math.round(p.cal * qty)} kcal · ${Math.round(p.protein * qty)}g eiwit`;
-      } else {
-        const id = parseInt(key.replace("c_", ""));
-        const m = loadCustomMeals().find(x => x.id === id);
-        if (m) metaEl.textContent = `${Math.round(m.cal * qty)} kcal · ${Math.round(m.protein * qty)}g eiwit`;
-      }
+    const meal = getAllMeals().find(m => String(m.id) === String(id));
+    if (meal) {
+      const metaEl = document.getElementById("meta-" + id);
+      if (metaEl) metaEl.textContent = `${Math.round(meal.cal * qty)} kcal · ${Math.round(meal.protein * qty)}g eiwit`;
     }
-    if (selected[key]) updateBasket();
+    if (selected[id]) updateBasket();
   }
 
-  function buildPresetRow(key, emoji, name, cal, protein) {
-    const qty = quantities[key] || 1;
-    const isSel = !!selected[key];
-    return `
-      <div class="preset-item ${isSel ? "selected" : ""}" id="item-${key}">
-        <div class="preset-left" onclick="toggleSelected('${key}')">
-          <span class="preset-emoji">${emoji}</span>
-          <div style="min-width:0">
-            <div class="preset-name">${name}</div>
-            <div class="preset-cal" id="meta-${key}">${Math.round(cal * qty)} kcal · ${Math.round(protein * qty)}g eiwit</div>
+  function renderMealsList() {
+    const meals = getAllMeals();
+    document.getElementById("meals-list").innerHTML = meals.map(m => {
+      const qty = quantities[m.id] || 1;
+      const isSel = !!selected[m.id];
+      return `
+        <div class="meal-item ${isSel ? "selected" : ""}" id="mitem-${m.id}">
+          <div class="meal-left" onclick="toggleSelected('${m.id}')">
+            <span class="meal-emoji">${m.emoji || "🍽️"}</span>
+            <div style="min-width:0;">
+              <div class="meal-name">${m.name}</div>
+              <div class="meal-cal" id="meta-${m.id}">${Math.round(m.cal * qty)} kcal · ${Math.round(m.protein * qty)}g eiwit</div>
+            </div>
           </div>
-        </div>
-        <div class="preset-controls">
-          <button class="qty-btn" onclick="changeQty('${key}', -1)">−</button>
-          <span class="qty-num" id="qty-${key}">${qty}</span>
-          <button class="qty-btn" onclick="changeQty('${key}', 1)">+</button>
-          <div class="preset-check ${isSel ? "checked" : ""}" id="check-${key}" onclick="toggleSelected('${key}')">${isSel ? "✓" : ""}</div>
-        </div>
-      </div>`;
-  }
-
-  function renderPresets() {
-    document.getElementById("preset-list").innerHTML =
-      PRESETS.map((p, i) => buildPresetRow(i, p.emoji, p.name, p.cal, p.protein)).join("");
-
-    const customs = loadCustomMeals();
-    const block = document.getElementById("custom-meals-block");
-    if (customs.length > 0) {
-      block.style.display = "block";
-      document.getElementById("custom-meals-list").innerHTML = customs.map(m => `
-        <div style="display:flex;align-items:center;gap:6px;">
-          <div style="flex:1">${buildPresetRow("c_" + m.id, m.emoji || "🍽️", m.name, m.cal, m.protein)}</div>
-          <button class="delete-custom-btn" onclick="deleteCustomMeal(${m.id})" style="margin-bottom:8px;">🗑</button>
-        </div>`).join("");
-    } else {
-      block.style.display = "none";
-    }
+          <div class="meal-controls">
+            <button class="qty-btn" onclick="changeQty('${m.id}', -1)">−</button>
+            <span class="qty-num" id="qty-${m.id}">${qty}</span>
+            <button class="qty-btn" onclick="changeQty('${m.id}', 1)">+</button>
+            <div class="meal-check ${isSel ? "checked" : ""}" id="check-${m.id}" onclick="toggleSelected('${m.id}')">${isSel ? "✓" : ""}</div>
+            <button class="meal-delete" onclick="deleteMeal('${m.id}')">🗑</button>
+          </div>
+        </div>`;
+    }).join("");
     updateBasket();
   }
 
@@ -436,16 +410,13 @@
     const totalCal = log.reduce((s, i) => s + i.cal, 0);
     const totalProt = log.reduce((s, i) => s + i.protein, 0);
     const remaining = CALORIE_GOAL - totalCal;
-    const calPct = Math.min(totalCal / CALORIE_GOAL, 1);
-    const protPct = Math.min(totalProt / PROTEIN_GOAL, 1);
     const calOver = totalCal > CALORIE_GOAL;
 
-    document.getElementById("ring-cal-circle").setAttribute("stroke-dasharray", `${calPct * CIRC} ${CIRC}`);
+    document.getElementById("ring-cal-circle").setAttribute("stroke-dasharray", `${Math.min(totalCal/CALORIE_GOAL,1)*CIRC} ${CIRC}`);
     document.getElementById("ring-cal-circle").setAttribute("stroke", calOver ? "#ff4466" : "#e8003a");
     document.getElementById("ring-cal-val").textContent = totalCal;
     document.getElementById("ring-cal-val").style.color = calOver ? "#ff4466" : "#fff";
-
-    document.getElementById("ring-prot-circle").setAttribute("stroke-dasharray", `${protPct * CIRC} ${CIRC}`);
+    document.getElementById("ring-prot-circle").setAttribute("stroke-dasharray", `${Math.min(totalProt/PROTEIN_GOAL,1)*CIRC} ${CIRC}`);
     document.getElementById("ring-prot-val").textContent = totalProt;
 
     const remEl = document.getElementById("remaining-val");
@@ -454,21 +425,19 @@
     else { remEl.textContent = `${remaining} kcal`; remEl.style.color = "#e8003a"; }
 
     const list = document.getElementById("log-list");
-    if (log.length === 0) {
-      list.innerHTML = '<div class="empty-msg">Nog niets gelogd — voeg je eerste maaltijd toe!</div>';
-    } else {
-      list.innerHTML = log.map(item => `
-        <div class="log-item">
-          <div class="log-left">
-            <span class="log-emoji">${item.emoji}</span>
-            <div>
-              <div class="log-name">${item.name}</div>
-              <div class="log-meta">${item.cal} kcal · ${item.protein}g eiwit</div>
+    list.innerHTML = log.length === 0
+      ? '<div class="empty-msg">Nog niets gelogd — voeg je eerste maaltijd toe!</div>'
+      : log.map(item => `
+          <div class="log-item">
+            <div class="log-left">
+              <span class="log-emoji">${item.emoji}</span>
+              <div>
+                <div class="log-name">${item.name}</div>
+                <div class="log-meta">${item.cal} kcal · ${item.protein}g eiwit</div>
+              </div>
             </div>
-          </div>
-          <button class="remove-btn" onclick="removeItem(${item.id})">×</button>
-        </div>`).join("");
-    }
+            <button class="remove-btn" onclick="removeLogItem(${item.id})">×</button>
+          </div>`).join("");
   }
 
   function renderHistory() {
@@ -478,12 +447,11 @@
     const list = document.getElementById("history-list");
     if (entries.length === 0) { list.innerHTML = '<div class="empty-msg">Nog geen geschiedenis.</div>'; return; }
     list.innerHTML = entries.map(([date, items]) => {
-      const cal = items.reduce((s,i) => s+i.cal, 0);
-      const prot = items.reduce((s,i) => s+i.protein, 0);
+      const cal = items.reduce((s,i)=>s+i.cal,0);
+      const prot = items.reduce((s,i)=>s+i.protein,0);
       const calColor = cal <= CALORIE_GOAL ? "#44cc88" : "#e8003a";
       const protColor = prot >= PROTEIN_GOAL ? "#aaaaaa" : "#ff8833";
-      const d = new Date(date + "T12:00:00");
-      const label = d.toLocaleDateString("nl-NL", { weekday:"long", day:"numeric", month:"long" });
+      const label = new Date(date+"T12:00:00").toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"});
       return `<div class="history-day">
         <div class="history-date">${label}</div>
         <div class="badges">
@@ -491,56 +459,48 @@
           <span class="badge" style="background:${protColor}22;color:${protColor}">${prot}g eiwit</span>
           <span class="badge" style="background:#ffffff11;color:#555">${items.length} items</span>
         </div>
-        <div>${items.map(item => `<div class="history-item">${item.emoji} ${item.name} — ${item.cal} kcal</div>`).join("")}</div>
+        <div>${items.map(i=>`<div class="history-item">${i.emoji} ${i.name} — ${i.cal} kcal</div>`).join("")}</div>
       </div>`;
     }).join("");
   }
 
-  function showPresets() {
+  function showSelectSection() {
     document.getElementById("add-meal-btn").style.display = "none";
-    document.getElementById("preset-section").style.display = "block";
-    document.getElementById("custom-section").style.display = "none";
-    renderPresets();
+    document.getElementById("select-section").style.display = "block";
+    document.getElementById("new-meal-section").style.display = "none";
+    renderMealsList();
   }
 
-  function showCustomForm() {
-    document.getElementById("preset-section").style.display = "none";
-    document.getElementById("custom-section").style.display = "block";
+  function showNewMealForm() {
+    document.getElementById("select-section").style.display = "none";
+    document.getElementById("new-meal-section").style.display = "block";
   }
 
-  function backToPresets() {
-    document.getElementById("custom-section").style.display = "none";
-    document.getElementById("preset-section").style.display = "block";
-    renderPresets();
+  function backToSelect() {
+    document.getElementById("new-meal-section").style.display = "none";
+    document.getElementById("select-section").style.display = "block";
+    renderMealsList();
   }
 
   function hideAll() {
     document.getElementById("add-meal-btn").style.display = "block";
-    document.getElementById("preset-section").style.display = "none";
-    document.getElementById("custom-section").style.display = "none";
+    document.getElementById("select-section").style.display = "none";
+    document.getElementById("new-meal-section").style.display = "none";
     resetSelection();
   }
 
-  function saveCustomMeal() {
-    const name = document.getElementById("custom-name").value.trim();
-    const cal = parseInt(document.getElementById("custom-cal").value) || 0;
-    const prot = parseInt(document.getElementById("custom-prot").value) || 0;
+  function saveNewMeal() {
+    const name = document.getElementById("new-name").value.trim();
+    const cal = parseInt(document.getElementById("new-cal").value) || 0;
+    const prot = parseInt(document.getElementById("new-prot").value) || 0;
     if (!name || !cal) return;
     const meals = loadCustomMeals();
-    const newMeal = { id: Date.now(), name, cal, protein: prot, emoji: "🍽️" };
-    meals.push(newMeal);
+    meals.push({ id: Date.now(), name, cal, protein: prot, emoji: "🍽️" });
     saveCustomMeals(meals);
-    // Also add it to today immediately
-    addItemsToDay([{ name, cal, protein: prot, emoji: "🍽️" }]);
-    document.getElementById("custom-name").value = "";
-    document.getElementById("custom-cal").value = "";
-    document.getElementById("custom-prot").value = "";
-  }
-
-  function deleteCustomMeal(id) {
-    const meals = loadCustomMeals().filter(m => m.id !== id);
-    saveCustomMeals(meals);
-    renderPresets();
+    document.getElementById("new-name").value = "";
+    document.getElementById("new-cal").value = "";
+    document.getElementById("new-prot").value = "";
+    backToSelect();
   }
 
   function switchView(view) {
